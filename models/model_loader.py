@@ -1,10 +1,18 @@
-import onnxruntime as ort
 import os
+import onnxruntime as ort
+
+sess_options = ort.SessionOptions()
+providers = ['CPUExecutionProvider']
+
+session = ort.InferenceSession("your_model.onnx", sess_options=sess_options, providers=providers)
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODEL_DIR = os.path.join(BASE_DIR, "models")
 
-import onnxruntime as ort
+
+
+
 
 def load_model(path):
     session = ort.InferenceSession(path)
