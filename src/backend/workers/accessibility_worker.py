@@ -1,6 +1,6 @@
 # backend/workers/accessibility_worker.py
-from app.services.job_queue import celery_app
-from app.db.sessions_store import update_session
+from src.backend.app.services.job_queue import celery_app
+from src.backend.app.db.sessions_store import update_session
 import time, os, json
 
 @celery_app.task(name="accessibility.process_accessibility_modes_task")
