@@ -4,7 +4,13 @@ import onnxruntime as ort
 sess_options = ort.SessionOptions()
 providers = ['CPUExecutionProvider']
 
-session = ort.InferenceSession("your_model.onnx", sess_options=sess_options, providers=providers)
+session = ort.InferenceSession("clarity_model.onnx", sess_options=sess_options, providers=providers)
+session = ort.InferenceSession("engagement_model.onnx", sess_options=sess_options, providers=providers)
+session = ort.InferenceSession("filler_model.onnx", sess_options=sess_options, providers=providers)
+session = ort.InferenceSession("pace_model.onnx", sess_options=sess_options, providers=providers)
+session = ort.InferenceSession("tech_depth_model.onnx", sess_options=sess_options, providers=providers)
+
+
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
