@@ -66,7 +66,7 @@ Simplified narration using text summarization + TTS.
  ┣ requirements.txt
 
 
- ┌──────────────────────────────┐
+                        ┌──────────────────────────────┐
                         │          Frontend            │
                         │        (React + Vite)        │
                         │ ─ File Upload (Video)        │
@@ -157,6 +157,8 @@ choco install ffmpeg
 Mac:
 
 brew install ffmpeg
+
+6. Run python models/generate_dummy_models
 
 ▶️ How to Run Locally
 
