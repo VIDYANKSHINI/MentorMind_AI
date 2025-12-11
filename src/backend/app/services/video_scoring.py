@@ -1,5 +1,5 @@
 import numpy as np
-from models.model_loader import load_model
+from src.models.model_loader import load_model
 import json
 import hashlib
 
