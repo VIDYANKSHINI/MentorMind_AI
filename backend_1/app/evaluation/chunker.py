@@ -1,14 +1,9 @@
-def chunk_transcript(transcript, seconds=300):
-    chunks, current = [], []
-    start = transcript[0]["start"]
+def chunk_text(text: str, max_words: int = 800):
+    words = text.split()
+    chunks = []
 
-    for item in transcript:
-        if item["start"] - start <= seconds:
-            current.append(item["text"])
-        else:
-            chunks.append(" ".join(current))
-            current = [item["text"]]
-            start = item["start"]
+    for i in range(0, len(words), max_words):
+        chunk = " ".join(words[i:i + max_words])
+        chunks.append(chunk)
 
-    chunks.append(" ".join(current))
     return chunks
