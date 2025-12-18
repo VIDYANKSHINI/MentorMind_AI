@@ -1,16 +1,16 @@
 
-from app.utils.youtube import extract_video_id
+from app.evaluation.service import evaluate_full_transcript
 from app.evaluation.transcrpit import get_transcript
-from app.evaluation.chunker import chunk_text
-from app.evaluation.evaluator import evaluate_chunk
-from app.evaluation.aggregator import aggregate_scores
 
-async def evaluate_video_task(transcript: str):
-    video_id = extract_video_id(url)
-    transcript = get_transcript(video_id)
-    chunks = chunk_text(transcript)
+def evaluate_video_task(youtube_url: str, user_id: str, job_id: str, store: dict):
+    try:
+        transcript = get_transcript(youtube_url)
 
-    scores = [evaluate_chunk(c) for c in chunks]
-    result = aggregate_scores(scores)
+        result = evaluate_full_transcript(transcript)
 
-    return {"user_id": user_id, "result": result}
+        store[job_id]["status"] = "completed"
+        store[job_id]["result"] = result
+
+    except Exception as e:
+        store[job_id]["status"] = "failed"
+        store[job_id]["result"] = str(e)

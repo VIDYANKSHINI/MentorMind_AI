@@ -1,20 +1,37 @@
-from app.evaluation.transcript import get_transcript
+from app.evaluation.chunker import chunk_text
 from app.evaluation.evaluator import evaluate_chunk
 
-def chunk_text(text, size=800):
-    for i in range(0, len(text), size):
-        yield text[i:i+size]
+def evaluate_full_transcript(transcript: str) -> dict:
+    chunks = chunk_text(transcript)
 
-def evaluate_youtube(url: str):
-    transcript = get_transcript(url)
-    scores = []
-
-    for chunk in chunk_text(transcript):
-        scores.append(evaluate_chunk(chunk))
-
-    final = {
-        k: round(sum(s[k] for s in scores) / len(scores), 2)
-        for k in scores[0]
+    totals = {
+        "clarity": 0,
+        "engagement": 0,
+        "pace": 0,
+        "filler": 0,
+        "technical": 0
     }
 
-    return final
+    for chunk in chunks:
+        scores = evaluate_chunk(chunk)
+        for k in totals:
+            totals[k] += scores[k]
+
+    n = len(chunks)
+    averages = {k: round(v / n, 2) for k, v in totals.items()}
+
+    # weighted overall score
+    overall = round(
+        averages["clarity"] * 0.25 +
+        averages["engagement"] * 0.25 +
+        averages["pace"] * 0.15 +
+        averages["filler"] * 0.15 +
+        averages["technical"] * 0.20,
+        2
+    )
+
+    return {
+        "scores": averages,
+        "overall_score": overall,
+        "chunks_evaluated": n
+    }

@@ -1,30 +1,34 @@
 import os
 from openai import OpenAI
 
-def get_openai_client():
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
-        raise RuntimeError("OPENAI_API_KEY not set")
-    return OpenAI(api_key=api_key)
+client = OpenAI()
 
 def evaluate_chunk(text: str) -> dict:
-    client = get_openai_client()
+    client = OpenAI()
 
     prompt = f"""
 You are an expert communication evaluator.
 
-Score the transcript chunk on a scale of 0–10:
-- clarity
-- engagement
-- pace
-- filler_words
-- technical_depth
-- overall
+Evaluate the following transcript chunk and give scores from 0–10.
+
+Scoring rules:
+- clarity: how understandable and structured the speech is
+- engagement: how engaging and interesting the speaker is
+- pace: speaking speed (too fast/slow reduces score)
+- filler: score HIGH if FEW filler words are used
+- technical: depth and correctness of technical content
+
+Return ONLY valid JSON in this format:
+
+{
+  "clarity": number,
+  "engagement": number,
+  "pace": number,
+  "filler": number,
+  "technical": number
+}
 
 Transcript:
-{text}
-
-Respond ONLY with valid JSON.
 """
 
     response = client.chat.completions.create(
