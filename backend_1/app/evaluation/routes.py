@@ -11,7 +11,7 @@ from app.evaluation.schemas import EvaluationRequest
 from app.evaluation.tasks import evaluate_video_task
 
 # -------------------------------
-# Routers (SEPARATE!)
+# Routers
 # -------------------------------
 auth_router = APIRouter(prefix="/auth", tags=["Auth"])
 eval_router = APIRouter(prefix="/evaluate", tags=["Evaluation"])
@@ -47,16 +47,18 @@ def evaluate(
 ):
     job_id = str(uuid.uuid4())
 
+    # Store initial job
     JOB_STORE[job_id] = {
-        "status": "processing",
+        "job_id": job_id,
         "user_id": user["id"],
+        "status": "processing",
         "result": None
     }
 
+    # Run evaluation in background
     background_tasks.add_task(
         evaluate_video_task,
         data.youtube_url,
-        user["id"],
         job_id,
         JOB_STORE
     )
@@ -71,9 +73,9 @@ def get_result(job_id: str, user=Depends(get_current_user)):
     job = JOB_STORE.get(job_id)
 
     if not job:
-        raise HTTPException(404, "Job not found")
+        raise HTTPException(status_code=404, detail="Job not found")
 
     if job["user_id"] != user["id"]:
-        raise HTTPException(403, "Unauthorized")
+        raise HTTPException(status_code=403, detail="Unauthorized")
 
     return job
