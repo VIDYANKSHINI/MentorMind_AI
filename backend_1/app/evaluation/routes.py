@@ -37,7 +37,7 @@ def login(form: OAuth2PasswordRequestForm = Depends()):
     }
 
 # ===============================
-# EVALUATION
+# EVALUATION (LINK ONLY)
 # ===============================
 @eval_router.post("/")
 def evaluate(
@@ -45,6 +45,9 @@ def evaluate(
     background_tasks: BackgroundTasks,
     user=Depends(get_current_user)
 ):
+    if not data.youtube_url:
+        raise HTTPException(status_code=400, detail="YouTube URL required")
+
     job_id = str(uuid.uuid4())
 
     JOB_STORE[job_id] = {
@@ -54,6 +57,7 @@ def evaluate(
         "result": None
     }
 
+    # 🔥 Background-safe execution
     background_tasks.add_task(
         evaluate_video_task,
         data.youtube_url,
@@ -61,7 +65,10 @@ def evaluate(
         JOB_STORE
     )
 
-    return JOB_STORE[job_id]
+    return {
+        "job_id": job_id,
+        "status": "processing"
+    }
 
 @eval_router.get("/{job_id}")
 def get_result(job_id: str, user=Depends(get_current_user)):
@@ -71,6 +78,6 @@ def get_result(job_id: str, user=Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="Job not found")
 
     if job["user_id"] != user["id"]:
-        raise HTTPException(status_code=403, detail="Unauthorized")
+        raise HTTPException(status_code=403, detail="Unauthorized access")
 
     return job
