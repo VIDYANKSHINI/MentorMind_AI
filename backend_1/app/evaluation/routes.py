@@ -47,7 +47,6 @@ def evaluate(
 ):
     job_id = str(uuid.uuid4())
 
-    # Store initial job
     JOB_STORE[job_id] = {
         "job_id": job_id,
         "user_id": user["id"],
@@ -55,7 +54,6 @@ def evaluate(
         "result": None
     }
 
-    # Run evaluation in background
     background_tasks.add_task(
         evaluate_video_task,
         data.youtube_url,
@@ -63,10 +61,7 @@ def evaluate(
         JOB_STORE
     )
 
-    return {
-        "job_id": job_id,
-        "status": "submitted"
-    }
+    return JOB_STORE[job_id]
 
 @eval_router.get("/{job_id}")
 def get_result(job_id: str, user=Depends(get_current_user)):

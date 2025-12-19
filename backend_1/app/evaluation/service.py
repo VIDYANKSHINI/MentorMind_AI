@@ -1,5 +1,5 @@
 from app.evaluation.chunker import chunk_text
-from app.evaluation.evaluator import evaluate_chunk
+from app.evaluation.evaluator import evaluate_transcript
 
 def evaluate_full_transcript(transcript: str) -> dict:
     chunks = chunk_text(transcript)
@@ -13,7 +13,7 @@ def evaluate_full_transcript(transcript: str) -> dict:
     }
 
     for chunk in chunks:
-        scores = evaluate_chunk(chunk)
+        scores = evaluate_transcript(chunk)
         for k in totals:
             totals[k] += scores[k]
 

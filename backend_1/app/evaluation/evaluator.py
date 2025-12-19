@@ -1,40 +1,53 @@
 import os
 from openai import OpenAI
+from youtube_transcript_api import YouTubeTranscriptApi
 
-client = OpenAI()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-def evaluate_chunk(text: str) -> dict:
-    client = OpenAI()
 
+def get_video_id(url) -> str:
+    url = str(url)   # 🔥 FIX
+
+    if "v=" in url:
+        return url.split("v=")[1].split("&")[0]
+    elif "youtu.be/" in url:
+        return url.split("youtu.be/")[1].split("?")[0]
+    else:
+        raise ValueError("Invalid YouTube URL")
+
+
+
+def get_transcript(youtube_url) -> str:
+    video_id = get_video_id(youtube_url)
+    transcript = YouTubeTranscriptApi.get_transcript(video_id)
+    return " ".join(t["text"] for t in transcript)
+
+
+def evaluate_transcript(transcript: str) -> dict:
     prompt = f"""
-You are an expert communication evaluator.
+You are an expert education evaluator.
 
-Evaluate the following transcript chunk and give scores from 0–10.
+Rate the teacher based on:
+- clarity
+- engagement
+- tone
+- pacing
+- content delivery
 
-Scoring rules:
-- clarity: how understandable and structured the speech is
-- engagement: how engaging and interesting the speaker is
-- pace: speaking speed (too fast/slow reduces score)
-- filler: score HIGH if FEW filler words are used
-- technical: depth and correctness of technical content
-
-Return ONLY valid JSON in this format:
-
-{
-  "clarity": number,
-  "engagement": number,
-  "pace": number,
-  "filler": number,
-  "technical": number
-}
+Give scores from 1 to 10.
+Return STRICT JSON only.
 
 Transcript:
+{transcript}
 """
 
     response = client.chat.completions.create(
         model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0
+        messages=[
+            {"role": "system", "content": "You return only valid JSON."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.3
     )
 
     return eval(response.choices[0].message.content)
