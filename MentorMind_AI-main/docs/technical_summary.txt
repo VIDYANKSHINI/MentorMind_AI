@@ -1,0 +1,142 @@
+Technical Summary — MentorMind AI
+1. Problem Statement
+
+Academic and early-career learners often struggle due to the lack of personalized guidance, limited access to skilled mentors, and inconsistent feedback on projects/interviews. Manual mentorship cannot scale to thousands of students simultaneously. Existing tools provide fragmented support and do not combine AI-driven evaluation, video scoring, document analysis, and task assistance in one system.
+
+Goal: Build an end-to-end AI mentorship platform that can
+✔ Evaluate learner submissions (video, text, PDFs)
+✔ Provide structured feedback
+✔ Assign tasks
+✔ Track progress
+✔ Connect with mentors with real-time evaluation insights
+
+2. Approach and AI Components
+
+Our platform uses a modular AI pipeline:
+
+(a) Video Evaluation (Clarity, Confidence, Communication)
+
+ONNX models for clarity & speech scoring
+
+Frame-based analysis for body posture
+
+Whisper/OpenAI ASR for speech-to-text
+
+NLP evaluation of communication quality
+
+(b) Resume & Document Parsing
+
+LLM-powered extraction of skills, projects, achievements
+
+Scoring model evaluates formatting, clarity, and job-role fit
+
+(c) Assignment Generation & Mentorship Insights
+
+Custom prompt-engineered LLM tasks
+
+AI generates personalized study paths, feedback summaries & improvement plans
+
+(d) Session Tracking & Job Queue
+
+Background workers handle long-running model inference
+
+Sessions stored in JSON / DB
+
+Queued execution prevents timeouts on Render/Azure
+
+(e) Frontend Integration
+
+React/Vercel frontend
+
+Calls backend FastAPI endpoints
+
+WebSockets for real-time feedback
+
+Secure session-based uploads
+
+3. Technical Architecture
+High-Level Architecture
+                     ┌──────────────────────────┐
+                     │         Frontend          │
+                     │  React + Vercel Hosting   │
+                     └──────────────┬────────────┘
+                                    │
+                          HTTPS REST APIs
+                                    │
+                     ┌──────────────┴──────────────┐
+                     │           Backend            │
+                     │       FastAPI + Uvicorn      │
+                     │   Hosted on Render/Azure     │
+                     └──┬──────────────┬───────────┘
+                        │              │
+       ┌────────────────┘              └──────────────────────┐
+       ▼                                                     ▼
+┌───────────────┐                                   ┌─────────────────┐
+│ AI Inference   │                                   │  Worker Queue   │
+│ ONNX Runtime   │                                   │ Background Jobs │
+│ Clarity Model  │                                   │ (video scoring) │
+└───────┬────────┘                                   └─────────────────┘
+        │
+        ▼
+┌────────────────────┐
+│ Session Store/DB    │
+│ JSON / SQLite / DB  │
+└────────────────────┘
+
+Key Technologies
+Component	Technology
+Frontend	React, Vercel, Tailwind
+Backend	FastAPI, Uvicorn, Python 3.10
+AI	ONNX Runtime, Transformers, Whisper
+Storage	Local JSON/SQLite → scalable to Azure Blob
+Background Jobs	ThreadQueue / Celery (future)
+Deployment	Render (backend) + Vercel (frontend)
+4. Challenges & Mitigations
+Challenge	Impact	Mitigation
+ONNX models not loading on cloud	Runtime errors on Render	Pre-convert models, store in /src/models, verify relative paths
+/mnt/data permission errors	Crash during session storage	Switched to local ./storage folder
+Long model inference causing timeouts	Render request timeouts	Introduced asynchronous job queue
+Python version mismatch	ONNX Runtime unsupported in Python 3.12+	Enforced Python 3.10 in Render build
+Large file uploads	Slow video processing	Chunked uploads + background processing
+CORS issues between frontend (Vercel) and backend (Render)	Failed API requests	Added CORS middleware allowing Vercel domain
+Slow cold boot on free-tier	User sees delay	Added health-check and warm start scripts
+5. Roadmap to Final Build
+Phase 1 — MVP (Completed / In Progress)
+
+FastAPI backend with AI models
+
+Video scoring pipeline
+
+Resume parsing + feedback
+
+JSON-based session tracking
+
+Basic frontend UI
+
+Phase 2 — Beta Release (Next 1–2 Weeks)
+
+Persistent DB (PostgreSQL / Azure SQL)
+
+Multi-model loader + fallback
+
+User authentication (JWT)
+
+Mentor dashboard
+
+Phase 3 — Production Ready (1–2 Months)
+
+GPU-enabled inference (Azure ML / Lambda Labs)
+
+Real-time video feedback (WebRTC + AI)
+
+AI mentor chat (RAG + project history)
+
+Task engine with gamified learning path
+
+Phase 4 — Scaling
+
+Multi-tenant architecture
+
+Auto-scaling workers
+
+Analytics, reporting, admin dashboards
