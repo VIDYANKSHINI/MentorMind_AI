@@ -1,14 +1,14 @@
 import numpy as np
-from src.models.model_loader import load_model
+from models.model_loader import LOADED_MODELS
 import json
 import hashlib
 
 # Load ONNX models
-clarity_model = load_model("models/clarity_model.onnx")
-engagement_model = load_model("models/engagement_cnn.onnx")
-pace_model = load_model("models/pace_model.onnx")
-filler_model = load_model("models/filler_model.onnx")
-tech_model = load_model("models/tech_depth_model.onnx")
+clarity_model = LOADED_MODELS["clarity"]
+engagement_model = LOADED_MODELS["engagement"]
+pace_model = LOADED_MODELS["pace"]
+tech_depth_model = LOADED_MODELS["tech_depth"]
+filler_model = LOADED_MODELS["filler"]
 
 
 # -----------------------------------------------------
@@ -72,16 +72,26 @@ def extract_features(file_path):
 # Run ONNX model
 # -----------------------------------------------------
 def run_model(model, features):
+    """
+    Supports:
+    - ONNX Runtime models
+    - Dummy Python functions (demo mode)
+    """
+    # ✅ Demo / dummy model (function)
+    if callable(model):
+        return model(features)
+
+    # ✅ Real ONNX model
     input_name = model.get_inputs()[0].name
     output_name = model.get_outputs()[0].name
 
-    if features.ndim == 1:
-        features = features.reshape(1, -1)
-    elif features.ndim == 3:
-        features = features.reshape(1, *features.shape)
+    result = model.run(
+        [output_name],
+        {input_name: features}
+    )
 
-    result = model.run([output_name], {input_name: features})
     return float(result[0][0])
+
 
 
 # -----------------------------------------------------
@@ -95,7 +105,7 @@ def compute_scores(features, file_path=None):
         "engagement": run_model(engagement_model, features["engagement"]),
         "pace": run_model(pace_model, features["pace"]),
         "filler": run_model(filler_model, features["filler"]),
-        "tech": run_model(tech_model, features["tech"]),
+        "tech": run_model(tech_depth_model, features["tech"]),
     }
 
     # normalize into controlled ranges

@@ -1,6 +1,11 @@
 
 import uuid
-from src.backend.app.config import AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_REGION, AWS_BUCKET
+from app.upload_engine.config import (
+    AWS_ACCESS_KEY,
+    AWS_SECRET_KEY,
+    AWS_REGION,
+    AWS_BUCKET,
+)
 import os
 import shutil
 

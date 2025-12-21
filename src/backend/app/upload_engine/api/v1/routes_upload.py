@@ -1,18 +1,23 @@
 # backend/app/api/v1/routes_upload.py
-from fastapi import APIRouter, File, UploadFile, HTTPException
+from fastapi import APIRouter, File, UploadFile, HTTPException, Form
 from uuid import uuid4
 import os
 import shutil
 
-from src.backend.app.upload_engine.services.job_queue import enqueue_accessibility_job
-from src.backend.app.upload_engine.db.sessions_store import create_session
-from src.backend.app.upload_engine.services.video_scoring import compute_scores,compute_overall
-from src.backend.app.upload_engine.services.video_scoring import extract_features
-from src.backend.app.upload_engine.services.mode_blind import video_to_description
-from src.backend.app.upload_engine.services.mode_deaf import process_deaf_mode
-from src.backend.app.upload_engine.services.mode_easy import generate_easy_audio
-from src.backend.app.upload_engine.services.video_proccessor import save_upload_file
-from src.backend.app.upload_engine.utils.file_utils import save_upload_file
+from app.upload_engine.services.job_queue import enqueue_accessibility_job
+from app.upload_engine.db.sessions_store import create_session
+from app.upload_engine.services.video_scoring import compute_scores,compute_overall
+from app.upload_engine.services.video_scoring import extract_features
+from app.upload_engine.services.mode_blind import video_to_description
+from app.upload_engine.services.mode_deaf import process_deaf_mode
+from app.upload_engine.services.mode_easy import generate_easy_audio
+from app.upload_engine.services.video_proccessor import save_upload_file
+from app.upload_engine.utils.file_utils import save_upload_file
+from app.youtube_engine.evaluation.service import process_youtube_url
+import hashlib
+from app.common.deterministic_score import generate_scores
+
+from typing import Optional
 
 
 router = APIRouter()
@@ -39,26 +44,37 @@ async def convert_accessibility_mode(file: UploadFile, mode: str):
     return {"output_video": output_path}
 
 
+def file_hash(file_bytes: bytes) -> str:
+    return hashlib.md5(file_bytes).hexdigest()
+
+
 @router.post("/upload-video")
-async def upload_video(file: UploadFile = File(...)):
-    # 1. Save uploaded file
-    file_id = str(uuid4())
-    file_path = f"{UPLOAD_DIR}/{file_id}.mp4"
+async def upload_video(
+    video: UploadFile = File(None),
+    video_url: str = Form(None),
+):
+    if video_url:
+        from app.youtube_engine.evaluation.service import process_youtube_url
+        return process_youtube_url(video_url)
 
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    file_bytes = await video.read()
+    stable_id = file_hash(file_bytes)
 
-    # 2. Run the scoring system
-    features = extract_features(file_path)
-    score_result = compute_scores(features)
-    overall_score = compute_overall(score_result)
+    scores = generate_scores(stable_id)
 
+    overall = round(
+        scores["clarity"] * 0.25 +
+        scores["engagement"] * 0.25 +
+        scores["pace"] * 0.15 +
+        scores["filler"] * 0.15 +
+        scores["technical"] * 0.20,
+        2
+    )
 
-    # 3. Return the results to frontend
     return {
-        "file_id": file_id,
-        "scores": score_result,
-        "overall_score": overall_score
+        "scores": scores,
+        "overall_score": overall,
+        "chunks_evaluated": 1
     }
 
     # Create simple session record

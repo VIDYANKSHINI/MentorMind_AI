@@ -8,7 +8,7 @@ import whisper
 import re
 import uuid
 
-from src.backend.app.upload_engine.services.job_queue import enqueue_job
+from app.upload_engine.services.job_queue import enqueue_job
 
 
 router = APIRouter(prefix="/score")

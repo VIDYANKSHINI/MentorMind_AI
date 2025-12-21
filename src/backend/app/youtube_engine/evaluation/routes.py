@@ -10,21 +10,28 @@ from app.youtube_engine.core.security import (
 )
 from app.youtube_engine.evaluation.schemas import EvaluationRequest
 from app.youtube_engine.evaluation.tasks import demo_score_from_url
+from fastapi import APIRouter
+from app.youtube_engine.evaluation.store import JOB_STORE
 
-# -------------------------------
-# Routers
-# -------------------------------
+
+# ---------------------------
+# Child routers
+# ---------------------------
 auth_router = APIRouter(prefix="/auth", tags=["Auth"])
 eval_router = APIRouter(prefix="/evaluate", tags=["Evaluation"])
 
-# -------------------------------
-# In-memory job store (demo only)
-# -------------------------------
-JOB_STORE = {}
+# ---------------------------
+# Parent router (THIS WAS MISSING)
+# ---------------------------
+router = APIRouter(prefix="/youtube", tags=["YouTube"])
 
-# ===============================
-# AUTH
-# ===============================
+router.include_router(auth_router)
+router.include_router(eval_router)
+
+# ---------------------------
+# Example endpoints
+# ---------------------------
+
 @auth_router.post("/login")
 def login(form: OAuth2PasswordRequestForm = Depends()):
     user = authenticate_user(form.username, form.password)

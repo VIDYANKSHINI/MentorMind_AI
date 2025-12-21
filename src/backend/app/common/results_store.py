@@ -1,21 +1,24 @@
 import hashlib
 import random
 import time
+from typing import Dict, Optional
 
-RESULTS_STORE = {}
+# In-memory results store (demo only)
+RESULTS_STORE: Dict[str, dict] = {}
 
-def _stable_random(seed: str, low=60, high=95):
+
+def _stable_random(seed: str, low: int = 60, high: int = 95) -> int:
     """
-    Generates deterministic-but-variable values
-    Same link → same result
-    Different link → different result
+    Generates deterministic-but-variable values.
+    Same source → same result
+    Different source → different result
     """
-    h = hashlib.md5(seed.encode()).hexdigest()
+    h = hashlib.md5(seed.encode("utf-8")).hexdigest()
     random.seed(int(h[:8], 16))
     return random.randint(low, high)
 
 
-def generate_demo_scores(source: str):
+def generate_demo_scores(source: str) -> Dict[str, int]:
     return {
         "clarity": _stable_random(source + "clarity"),
         "engagement": _stable_random(source + "engagement"),
@@ -25,15 +28,37 @@ def generate_demo_scores(source: str):
     }
 
 
-def store_result(job_id: str, source: str):
+def store_result(job_id: str, source: str) -> None:
+    """
+    Used by:
+    - upload engine (video upload demo mode)
+    """
     scores = generate_demo_scores(source)
 
     RESULTS_STORE[job_id] = {
         "scores": scores,
         "overall_score": round(sum(scores.values()) / len(scores), 2),
-        "generated_at": time.time()
+        "generated_at": time.time(),
+        "source": source,
+        "mode": "demo"
     }
 
 
-def get_result(job_id: str):
+# 🔹 NEW (used internally, does NOT change existing API)
+def store_computed_result(job_id: str, scores: Dict[str, float], meta: dict = None) -> None:
+    """
+    Used by:
+    - YouTube engine
+    - Real ML scoring
+    """
+    RESULTS_STORE[job_id] = {
+        "scores": scores,
+        "overall_score": round(sum(scores.values()) / len(scores), 2),
+        "generated_at": time.time(),
+        "mode": "computed",
+        "meta": meta or {}
+    }
+
+
+def get_result(job_id: str) -> Optional[dict]:
     return RESULTS_STORE.get(job_id)
