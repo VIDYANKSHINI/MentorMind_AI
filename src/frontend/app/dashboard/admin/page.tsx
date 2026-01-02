@@ -52,47 +52,48 @@ export default function AdminView() {
   }
 
   const departments: DepartmentPerformance[] = [
-    {
-      department: "Computer Science",
-      mentors: 28,
-      avgScore: 8.85,
-      trend: "up",
-      accessibilityScore: 91,
-      commonGaps: ["Technical Depth", "Pacing"],
-    },
-    {
-      department: "Data Science",
-      mentors: 22,
-      avgScore: 8.72,
-      trend: "up",
-      accessibilityScore: 89,
-      commonGaps: ["Clarity", "Engagement"],
-    },
-    {
-      department: "Machine Learning",
-      mentors: 19,
-      avgScore: 8.68,
-      trend: "stable",
-      accessibilityScore: 87,
-      commonGaps: ["Tone & Confidence", "Technical Depth"],
-    },
-    {
-      department: "Artificial Intelligence",
-      mentors: 25,
-      avgScore: 8.51,
-      trend: "down",
-      accessibilityScore: 86,
-      commonGaps: ["Engagement", "Pacing"],
-    },
-    {
-      department: "Software Engineering",
-      mentors: 30,
-      avgScore: 8.49,
-      trend: "up",
-      accessibilityScore: 90,
-      commonGaps: ["Technical Depth", "Clarity"],
-    },
-  ]
+  {
+    department: "Mathematics",
+    mentors: 26,
+    avgScore: 8.75,
+    trend: "up",
+    accessibilityScore: 92,
+    commonGaps: ["Problem Explanation", "Pacing"],
+  },
+  {
+    department: "Science – Physics",
+    mentors: 21,
+    avgScore: 8.62,
+    trend: "up",
+    accessibilityScore: 89,
+    commonGaps: ["Concept Clarity", "Engagement"],
+  },
+  {
+    department: "Science – Chemistry",
+    mentors: 18,
+    avgScore: 8.58,
+    trend: "stable",
+    accessibilityScore: 88,
+    commonGaps: ["Reaction Explanation", "Technical Terms"],
+  },
+  {
+    department: "Science – Biology",
+    mentors: 23,
+    avgScore: 8.47,
+    trend: "down",
+    accessibilityScore: 87,
+    commonGaps: ["Diagram Explanation", "Pacing"],
+  },
+  {
+    department: "Social Science",
+    mentors: 27,
+    avgScore: 8.54,
+    trend: "up",
+    accessibilityScore: 91,
+    commonGaps: ["Student Engagement", "Concept Recall"],
+  },
+];
+
 
   const accessibilityMetrics: AccessibilityMetric[] = [
     {
