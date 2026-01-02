@@ -65,7 +65,7 @@ export default function MentorDashboard() {
     router.push("/login")
   }
 
-  const [sessions, setSessions] = useState<Session[]>([
+ const [sessions, setSessions] = useState<Session[]>([
   {
     id: "1",
     title: "Mathematics - Algebra Basics",
@@ -115,8 +115,39 @@ export default function MentorDashboard() {
     score: 9.0,
     hasEvaluation: true,
     hasFeedback: true,
+  },
+  {
+    id: "6",
+    title: "Social Science - History: National Movement",
+    uploadDate: "2025-01-10",
+    duration: "43:30",
+    status: "completed",
+    score: 8.5,
+    hasEvaluation: true,
+    hasFeedback: true,
+  },
+  {
+    id: "7",
+    title: "Social Science - Geography: Resources and Development",
+    uploadDate: "2025-01-09",
+    duration: "57:20",
+    status: "completed",
+    score: 9.3,
+    hasEvaluation: true,
+    hasFeedback: true,
+  },
+  {
+    id: "8",
+    title: "English - Literature: Prose and Poetry",
+    uploadDate: "2025-01-08",
+    duration: "49:15",
+    status: "completed",
+    score: 8.8,
+    hasEvaluation: true,
+    hasFeedback: true,
   }
 ]);
+
 
 
   const [dragActive, setDragActive] = useState(false)
