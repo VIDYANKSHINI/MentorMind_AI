@@ -147,10 +147,7 @@ export default function EvaluationReport() {
               <p className="text-[rgba(55,50,47,0.70)] mt-1">{sessionTitle}</p>
             </div>
           </div>
-          <Button className="bg-[#37322F] hover:bg-[#37322F]/90 text-white">
-            <Download className="w-4 h-4 mr-2" />
-            Download Report
-          </Button>
+          
         </div>
 
         {/* Overall Score Card */}
@@ -347,7 +344,7 @@ export default function EvaluationReport() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-orange-600" />
-                <CardTitle className="text-lg font-semibold text-[#37322F]">Areas for Improvement</CardTitle>
+                <CardTitle className="text-lg font-semibold text-[#37322F]">Weaknesses</CardTitle>
               </div>
               <CardDescription>AI-identified opportunities to enhance teaching</CardDescription>
             </CardHeader>
@@ -412,7 +409,7 @@ export default function EvaluationReport() {
                       Comprehensive guide covering all five evaluation parameters with actionable tips
                     </p>
                     <Button variant="outline" size="sm" className="text-[#37322F] bg-transparent">
-                      Watch Video
+                      Watch Video here
                     </Button>
                   </div>
                 </div>
