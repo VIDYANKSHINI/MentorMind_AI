@@ -59,7 +59,7 @@ export default function LeaderboardPage() {
     {
       id: "1",
       name: "Dr. Sarah Mitchell",
-      department: "Computer Science",
+      department: "Science",
       score: 9.42,
       aiScore: 9.5,
       studentFeedback: 4.8,
@@ -72,7 +72,7 @@ export default function LeaderboardPage() {
     {
       id: "2",
       name: "Prof. James Chen",
-      department: "Data Science",
+      department: " Science",
       score: 9.18,
       aiScore: 9.3,
       studentFeedback: 4.7,
@@ -85,7 +85,7 @@ export default function LeaderboardPage() {
     {
       id: "3",
       name: "You",
-      department: "Machine Learning",
+      department: "Mathematics",
       score: 8.95,
       aiScore: 8.7,
       studentFeedback: 4.6,
@@ -98,7 +98,7 @@ export default function LeaderboardPage() {
     {
       id: "4",
       name: "Dr. Emily Rodriguez",
-      department: "Artificial Intelligence",
+      department: "History",
       score: 8.83,
       aiScore: 9.0,
       studentFeedback: 4.5,
@@ -110,7 +110,7 @@ export default function LeaderboardPage() {
     {
       id: "5",
       name: "Prof. Michael Thompson",
-      department: "Software Engineering",
+      department: "Literature",
       score: 8.67,
       aiScore: 8.8,
       studentFeedback: 4.4,
