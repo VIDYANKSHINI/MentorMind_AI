@@ -1,144 +1,79 @@
-MentorMindAI
-Smart Video Evaluation and Accessibility Engine
+# MentorMindAI
+## Smart Video Evaluation and Accessibility Engine
 
-MentorMindAI is an AI-powered backend platform that evaluates teaching quality from recorded videos and converts educational content into accessible learning formats.
-The system uses ONNX-based machine learning models, FastAPI, and asynchronous processing to deliver scalable, reproducible, and fair video evaluations.
+MentorMindAI is an AI-powered backend system that evaluates teaching quality from recorded videos and converts educational content into accessible learning formats.  
+The platform uses ONNX-based machine learning models, FastAPI, and asynchronous processing to provide scalable, reproducible, and fair video evaluations.
 
-Problem Statement
+---
 
-Teaching quality evaluation is often subjective, inconsistent, and inaccessible for learners with disabilities.
-Educators lack objective feedback mechanisms, and students with visual, hearing, or learning challenges struggle to access standard video content.
+## Table of Contents
 
-Proposed Solution
+- Problem Statement  
+- Solution Overview  
+- Key Features  
+- Accessibility Modes  
+- System Architecture  
+- Project Structure  
+- Technology Stack  
+- Installation and Setup  
+- Running the Application  
+- API Endpoints  
+- Screenshots  
+- Contributors  
+- Future Scope  
+- License  
+
+---
+
+## Problem Statement
+
+Teaching quality evaluation is often subjective and inconsistent. Additionally, standard video-based learning is not accessible to learners with visual, hearing, or cognitive challenges.
+
+There is a need for:
+- Objective teaching quality assessment  
+- Automated feedback for mentors  
+- Inclusive and accessible learning formats  
+
+---
+
+## Solution Overview
 
 MentorMindAI provides:
+- AI-based scoring of teaching videos  
+- Deterministic and reproducible evaluation metrics  
+- Automatic conversion of videos into accessible modes  
 
-Objective, AI-driven teaching quality assessment
+---
 
-Deterministic and reproducible evaluation scores
+## Key Features
 
-Automated accessibility conversion for inclusive learning
+### AI Video Scoring System
 
-Key Features
-Video Scoring System
+Each uploaded teaching video is evaluated using ONNX models across the following dimensions:
 
-Uploaded teaching videos are evaluated across multiple dimensions:
+- Clarity  
+- Engagement  
+- Pace  
+- Filler Word Usage  
+- Technical Depth  
+- Weighted Overall Score  
 
-Clarity
+Each metric is processed independently to ensure fairness and transparency.
 
-Engagement
+---
 
-Pace
+## Accessibility Modes
 
-Filler Word Usage
+### Blind Mode
+Generates audio narration describing both visual and spoken content.
 
-Technical Depth
+### Deaf Mode
+Automatically generates subtitles using Whisper Speech-to-Text and exports `.srt` files.
 
-Weighted Overall Score
+### Easy Mode
+Produces simplified narration using text summarization and text-to-speech for better comprehension.
 
-Each metric is independently inferred using ONNX models to ensure fairness and consistency.
+---
 
-Accessibility Modes
+## System Architecture
 
-MentorMindAI converts videos into the following formats:
-
-Blind Mode
-Generates audio narration describing visual and spoken content.
-
-Deaf Mode
-Automatically generates subtitles using Whisper speech-to-text and exports .srt files.
-
-Easy Mode
-Produces simplified narration using text summarization and text-to-speech for improved comprehension.
-
-Machine Learning Models
-
-The system uses dedicated ONNX models for each evaluation metric:
-
-clarity_model.onnx
-
-engagement_cnn.onnx
-
-pace_model.onnx
-
-filler_model.onnx
-
-tech_depth_model.onnx
-
-Each model contributes to a deterministic final score.
-
-System Architecture Overview
-Frontend (React + Vite)
-        |
-        v
-FastAPI REST API
-        |
-        v
-Async Task Queue (Redis + Celery)
-        |
-        v
-Worker Engine
- - Audio Extraction
- - Whisper Transcription
- - Feature and Frame Extraction
- - ONNX Model Inference
- - Accessibility Mode Generation
-        |
-        v
-Results Storage (Database / JSON)
-        |
-        v
-Results Dashboard and Accessibility Output
-
-Project Structure
-MentorMindAI/
-├── backend/
-│   └── app/
-│       ├── api/v1/
-│       │   └── routes_upload.py
-│       ├── services/
-│       │   ├── video_scoring.py
-│       │   ├── mode_blind.py
-│       │   ├── mode_deaf.py
-│       │   ├── mode_easy.py
-│       │   └── video_processor.py
-│       └── main.py
-├── models/
-│   ├── clarity_model.onnx
-│   ├── engagement_cnn.onnx
-│   ├── pace_model.onnx
-│   ├── filler_model.onnx
-│   └── tech_depth_model.onnx
-├── frontend/ (optional)
-├── requirements.txt
-└── README.md
-
-Technology Stack
-
-Backend
-
-FastAPI
-
-Celery
-
-Redis
-
-ONNX Runtime
-
-FFmpeg
-
-AI and ML
-
-Whisper ASR
-
-Transformers
-
-PyTorch
-
-OpenCV
-
-Frontend (Optional)
-
-React
-
-Vite
